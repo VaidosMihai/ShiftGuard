@@ -1,0 +1,21 @@
+name: .NET Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet restore
+      - run: dotnet build -c Release --no-restore
+      - run: dotnet test -c Release --no-build
+      - run: dotnet publish src/WinPerfOptimizer.App/WinPerfOptimizer.App.csproj -p:PublishProfile=win-x64-singlefile
+      - run: dotnet publish src/WinPerfOptimizer.App/WinPerfOptimizer.App.csproj -p:PublishProfile=win-x64-framework

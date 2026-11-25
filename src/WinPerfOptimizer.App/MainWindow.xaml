@@ -1,0 +1,191 @@
+<ui:FluentWindow x:Class="WinPerfOptimizer.App.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:core="clr-namespace:WinPerfOptimizer.Core.Models;assembly=WinPerfOptimizer.Core"
+                 Title="WinPerfOptimizer"
+                 Width="1040"
+                 Height="760"
+                 MinWidth="860"
+                 MinHeight="640"
+                 Background="#0F141B"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Title="WinPerfOptimizer" Grid.Row="0" ShowMaximize="True" ShowMinimize="True" />
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" IsTabStop="False" Padding="24,12,24,24">
+            <StackPanel MaxWidth="1120">
+                <!-- Header + Status Pills -->
+                <TextBlock Text="System Performance &amp; Resource Control"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           Foreground="#F8FAFC" />
+                <TextBlock Text="100% reversible Windows 10/11 tuning · Audit &amp; Dry-Run require no Administrator rights"
+                           FontSize="13"
+                           Foreground="#CBD5E1"
+                           Margin="0,4,0,14" />
+
+                <WrapPanel Margin="0,0,0,16">
+                    <Border Background="#161E29" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
+                        <TextBlock Text="{Binding HardwarePill}" Foreground="#E2E8F0" FontSize="12" />
+                    </Border>
+                    <Border Background="#161E29" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
+                        <TextBlock Text="{Binding PowerPill}" Foreground="#7DD3FC" FontSize="12" FontWeight="SemiBold" />
+                    </Border>
+                    <Border Background="#161E29" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
+                        <TextBlock Text="{Binding UacPill}" Foreground="#E2E8F0" FontSize="12" />
+                    </Border>
+                    <Border Background="#161E29" BorderBrush="#10B981" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
+                        <TextBlock Text="{Binding BackupPill}" Foreground="#6EE7B7" FontSize="12" />
+                    </Border>
+                </WrapPanel>
+
+                <!-- Minimalist Action Dock -->
+                <Border Background="#161E29" BorderBrush="#263244" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,0,0,16">
+                    <StackPanel>
+                        <WrapPanel Margin="0,0,0,12">
+                            <ui:Button x:Name="BtnAudit"
+                                       Content="Run Audit"
+                                       AutomationProperties.Name="Run Audit"
+                                       Command="{Binding RunAuditCommand}"
+                                       Appearance="Secondary"
+                                       MinWidth="110" MinHeight="44" Margin="0,0,10,8" TabIndex="1" />
+                            <ui:Button x:Name="BtnDryRun"
+                                       Content="Dry Run (Gaming)"
+                                       AutomationProperties.Name="Dry Run"
+                                       Command="{Binding RunDryRunCommand}"
+                                       CommandParameter="{x:Static core:PresetProfile.Gaming}"
+                                       Appearance="Secondary"
+                                       MinWidth="130" MinHeight="44" Margin="0,0,10,8" TabIndex="2" />
+                            <ui:Button x:Name="BtnDaily"
+                                       Content="Daily Profile"
+                                       AutomationProperties.Name="Daily Profile"
+                                       Command="{Binding ApplyDailyCommand}"
+                                       Appearance="Primary"
+                                       MinWidth="125" MinHeight="44" Margin="0,0,10,8" TabIndex="3" />
+                            <ui:Button x:Name="BtnGaming"
+                                       Content="Gaming Profile"
+                                       AutomationProperties.Name="Gaming Profile"
+                                       Command="{Binding ApplyGamingCommand}"
+                                       Appearance="Primary"
+                                       MinWidth="135" MinHeight="44" Margin="0,0,10,8" TabIndex="4" />
+                            <ui:Button x:Name="BtnResume"
+                                       Content="Resume"
+                                       AutomationProperties.Name="Resume"
+                                       Command="{Binding ResumeAppsCommand}"
+                                       Appearance="Secondary"
+                                       MinWidth="96" MinHeight="44" Margin="0,0,10,8" TabIndex="5" />
+                            <ui:Button x:Name="BtnRollback"
+                                       Content="Rollback"
+                                       AutomationProperties.Name="Rollback"
+                                       Command="{Binding RollbackCommand}"
+                                       Appearance="Danger"
+                                       MinWidth="105" MinHeight="44" Margin="0,0,10,8" TabIndex="6" />
+                        </WrapPanel>
+
+                        <WrapPanel VerticalAlignment="Center">
+                            <CheckBox x:Name="ChkMouseAccel"
+                                      Content="Disable Mouse Accel"
+                                      AutomationProperties.Name="Mouse Acceleration"
+                                      IsChecked="{Binding DisableMouseAccel}"
+                                      MinHeight="44" Margin="0,0,18,0" TabIndex="7" />
+                            <CheckBox x:Name="ChkNetLatency"
+                                      Content="Network Throttling Off"
+                                      AutomationProperties.Name="Network Latency"
+                                      IsChecked="{Binding OptimizeNetworkLatency}"
+                                      MinHeight="44" Margin="0,0,18,0" TabIndex="8" />
+                            <CheckBox x:Name="ChkCommsGuard"
+                                      Content="Include Comms in Guard"
+                                      AutomationProperties.Name="Comms Guard"
+                                      IsChecked="{Binding IncludeCommsInGuard}"
+                                      MinHeight="44" Margin="0,0,18,0" TabIndex="9" />
+                            <ComboBox x:Name="CmbHibernation"
+                                      AutomationProperties.Name="Hibernation Mode"
+                                      ItemsSource="{Binding HibernationOptions}"
+                                      SelectedItem="{Binding SelectedHibernation}"
+                                      MinWidth="140" MinHeight="44" TabIndex="10" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Live Status Banner -->
+                <Border Background="#111827" BorderBrush="#334155" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,16">
+                    <TextBlock x:Name="TxtStatus"
+                               Text="{Binding StatusMessage}"
+                               AutomationProperties.LiveSetting="Polite"
+                               Foreground="#F1F5F9"
+                               FontSize="13"
+                               TextWrapping="Wrap" />
+                </Border>
+
+                <!-- Diff & Startup Grid -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="#161E29" BorderBrush="#263244" BorderThickness="1" CornerRadius="10" Padding="14">
+                        <StackPanel>
+                            <TextBlock x:Name="LblDiffHeader" Text="Configuration Diff (Before / After)" FontSize="15" FontWeight="SemiBold" Foreground="#F8FAFC" Margin="0,0,0,10" />
+                            <DataGrid x:Name="DiffDataGrid"
+                                      AutomationProperties.Name="Configuration Diff"
+                                      AutomationProperties.LabeledBy="{Binding ElementName=LblDiffHeader}"
+                                      ItemsSource="{Binding DiffRows}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      Height="280"
+                                      KeyboardNavigation.TabNavigation="Once"
+                                      TabIndex="11">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Setting" Binding="{Binding Item}" Width="2*" />
+                                    <DataGridTextColumn Header="Before" Binding="{Binding Before}" Width="*" />
+                                    <DataGridTextColumn Header="After" Binding="{Binding After}" Width="*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="#161E29" BorderBrush="#263244" BorderThickness="1" CornerRadius="10" Padding="14">
+                        <StackPanel>
+                            <TextBlock x:Name="LblStartupHeader" Text="Startup Programs" FontSize="15" FontWeight="SemiBold" Foreground="#F8FAFC" Margin="0,0,0,10" />
+                            <ListView x:Name="StartupListView"
+                                      AutomationProperties.Name="Startup Programs"
+                                      AutomationProperties.LabeledBy="{Binding ElementName=LblStartupHeader}"
+                                      ItemsSource="{Binding StartupEntries}"
+                                      Height="280"
+                                      KeyboardNavigation.TabNavigation="Once"
+                                      TabIndex="12">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,4">
+                                            <TextBlock Text="{Binding Name}" Foreground="#F8FAFC" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding Category}" Foreground="#94A3B8" FontSize="11" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+                    <ui:Button x:Name="BtnExportReport"
+                               Content="Export HTML / MD Report"
+                               AutomationProperties.Name="Export Report"
+                               Command="{Binding ExportReportCommand}"
+                               Appearance="Secondary"
+                               MinWidth="180" MinHeight="44" TabIndex="13" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</ui:FluentWindow>
