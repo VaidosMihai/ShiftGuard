@@ -61,4 +61,31 @@ public class MainViewModelTests
         vm.RollbackCommand.CanExecute(null).Should().BeTrue();
         vm.BackupPill.Should().Contain(snapId.ToString("N")[..8]);
     }
+
+    [Fact]
+    public async Task RunFullRevision_PopulatesHealthScoresAndDeltas()
+    {
+        var orchestrator = Substitute.For<ISystemRevisionOrchestrator>();
+        var hw = new HardwareProfile("ASUS", "FA506IU", "Windows 11", 26200, "Ryzen 7", "AMD", 16, "GTX 1660 Ti", true, true, true, true, true, false, 0, "");
+        var snap = new SystemRevisionSnapshot(
+            Guid.NewGuid(), "Baseline", RevisionKind.AutoBaseline, DateTimeOffset.UtcNow, 1000, false,
+            hw, "Balanced",
+            new ProbeResult<DriverAuditReport>(ProbeStatus.Ok, new DriverAuditReport(50, 0, 0, 0, [], [], false), TimeSpan.Zero),
+            new ProbeResult<BatteryHealthReport>(ProbeStatus.NotApplicable, new BatteryHealthReport(BatteryPresence.NotPresent, [], false), TimeSpan.Zero),
+            new ProbeResult<MemoryRevisionInfo>(ProbeStatus.Ok, new MemoryRevisionInfo(16, 8, 24, 10, 41, 2, 2, "Dual", XmpExpoStatus.LikelyActive, [], []), TimeSpan.Zero),
+            new ProbeResult<CpuRevisionInfo>(ProbeStatus.Ok, new CpuRevisionInfo("Ryzen 7", "AMD", 8, 16, 8, 0, 2900, 2900, 4200, 4200, null, CpuThrottleReason.None, true, 100, 1.0, 0.5, []), TimeSpan.Zero),
+            new ProbeResult<StorageRevisionInfo>(ProbeStatus.Ok, new StorageRevisionInfo([], []), TimeSpan.Zero),
+            new ProbeResult<GpuRevisionInfo>(ProbeStatus.Ok, new GpuRevisionInfo("GTX 1660 Ti", 6, "566.0", null, true, true), TimeSpan.Zero),
+            [], [], new SubsystemScores(100, 100, 95, 100, 100, 99), []);
+
+        orchestrator.CaptureRevisionAsync(Arg.Any<RevisionCaptureOptions>(), Arg.Any<IProgress<string>>(), Arg.Any<CancellationToken>())
+            .Returns(snap);
+
+        var vm = new MainViewModel(_hw, _power, _reg, _proc, _backup, _elevated, orchestrator);
+        await vm.RunFullRevisionCommand.ExecuteAsync(null);
+
+        vm.OverallHealthScore.Should().Be(99);
+        vm.RevisionDeltas.Should().NotBeEmpty();
+        vm.StatusMessage.Should().Contain("99/100");
+    }
 }

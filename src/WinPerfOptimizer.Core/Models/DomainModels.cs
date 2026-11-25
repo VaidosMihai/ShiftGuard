@@ -1,6 +1,6 @@
 namespace WinPerfOptimizer.Core.Models;
 
-public enum WorkerMode { ApplyProfile, Rollback, CreateRestorePoint }
+public enum WorkerMode { ApplyProfile, Rollback, CreateRestorePoint, InstallDrivers }
 public enum PresetProfile { Daily, Gaming }
 public enum HibernationAction { Keep, Reduced, Off }
 public enum StartupCategory { Protected, GamingLauncher, BloatUpdater, Other }

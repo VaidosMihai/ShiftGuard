@@ -105,7 +105,8 @@ public static partial class Guardrails
 
         var payloadCount = (request.Apply is not null ? 1 : 0)
                          + (request.Rollback is not null ? 1 : 0)
-                         + (request.Restore is not null ? 1 : 0);
+                         + (request.Restore is not null ? 1 : 0)
+                         + (request.DriverUpdate is not null ? 1 : 0);
         if (payloadCount != 1)
             throw new InvalidOperationException("ElevatedRequest must contain exactly one mode payload.");
 
@@ -114,6 +115,7 @@ public static partial class Guardrails
             WorkerMode.ApplyProfile => request.Apply is not null,
             WorkerMode.Rollback => request.Rollback is not null && request.Rollback.SnapshotId != Guid.Empty,
             WorkerMode.CreateRestorePoint => request.Restore is not null,
+            WorkerMode.InstallDrivers => request.DriverUpdate is { Candidates.Count: > 0 },
             _ => false
         };
 

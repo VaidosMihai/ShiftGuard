@@ -27,6 +27,7 @@ public sealed record ApplyPayload(
 
 public sealed record RollbackPayload(Guid SnapshotId);
 public sealed record RestorePointPayload(RestoreReason Reason);
+public sealed record DriverUpdatePayload(IReadOnlyList<DriverUpdateCandidate> Candidates, bool SystemRebootPending);
 
 public sealed record ElevatedRequest(
     int SchemaVersion,
@@ -34,7 +35,8 @@ public sealed record ElevatedRequest(
     WorkerMode Mode,
     ApplyPayload? Apply,
     RollbackPayload? Rollback,
-    RestorePointPayload? Restore);
+    RestorePointPayload? Restore,
+    DriverUpdatePayload? DriverUpdate = null);
 
 public sealed record ElevatedResult(
     Guid RequestId,
@@ -42,4 +44,5 @@ public sealed record ElevatedResult(
     Guid? SnapshotId,
     IReadOnlyList<TweakId> AppliedIds,
     string ErrorCode,
-    string Message);
+    string Message,
+    IReadOnlyList<DriverInstallOutcome>? DriverOutcomes = null);

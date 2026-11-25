@@ -3,189 +3,456 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:core="clr-namespace:WinPerfOptimizer.Core.Models;assembly=WinPerfOptimizer.Core"
-                 Title="WinPerfOptimizer"
-                 Width="1040"
-                 Height="760"
-                 MinWidth="860"
-                 MinHeight="640"
-                 Background="#0F141B"
+                 Title="ShiftGuard · WinPerfOptimizer"
+                 Width="1140"
+                 Height="800"
+                 MinWidth="920"
+                 MinHeight="680"
+                 Background="#0F1115"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
                  WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="DarkDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="#0F1115" />
+            <Setter Property="Foreground" Value="#F3F4F6" />
+            <Setter Property="RowBackground" Value="#0F1115" />
+            <Setter Property="AlternatingRowBackground" Value="#141821" />
+            <Setter Property="BorderBrush" Value="#2A303C" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#222834" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#171A21" />
+                        <Setter Property="Foreground" Value="#CBD5E1" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="Padding" Value="10,8" />
+                        <Setter Property="BorderBrush" Value="#2A303C" />
+                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Foreground" Value="#F3F4F6" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Padding" Value="8,6" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#1E3A5F" />
+                                <Setter Property="Foreground" Value="#F8FAFC" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="NavTabItemStyle" TargetType="TabItem">
+            <Setter Property="Foreground" Value="#9CA3AF" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="14,12" />
+            <Setter Property="Margin" Value="6,3" />
+            <Setter Property="MinWidth" Value="168" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="NavPill"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="2,0,0,0"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavPill" Property="Background" Value="#1E2430" />
+                                <Setter Property="Foreground" Value="#F3F4F6" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="NavPill" Property="Background" Value="#172536" />
+                                <Setter TargetName="NavPill" Property="BorderBrush" Value="#38BDF8" />
+                                <Setter Property="Foreground" Value="#38BDF8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Title="WinPerfOptimizer" Grid.Row="0" ShowMaximize="True" ShowMinimize="True" />
+        <ui:TitleBar Title="ShiftGuard · System Revision &amp; Optimizer" Grid.Row="0" ShowMaximize="True" ShowMinimize="True" />
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" IsTabStop="False" Padding="24,12,24,24">
-            <StackPanel MaxWidth="1120">
-                <!-- Header + Status Pills -->
-                <TextBlock Text="System Performance &amp; Resource Control"
-                           FontSize="22"
-                           FontWeight="SemiBold"
-                           Foreground="#F8FAFC" />
-                <TextBlock Text="100% reversible Windows 10/11 tuning · Audit &amp; Dry-Run require no Administrator rights"
-                           FontSize="13"
-                           Foreground="#CBD5E1"
-                           Margin="0,4,0,14" />
+        <Grid Grid.Row="1" Margin="18,8,18,18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-                <WrapPanel Margin="0,0,0,16">
-                    <Border Background="#161E29" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
-                        <TextBlock Text="{Binding HardwarePill}" Foreground="#E2E8F0" FontSize="12" />
-                    </Border>
-                    <Border Background="#161E29" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
-                        <TextBlock Text="{Binding PowerPill}" Foreground="#7DD3FC" FontSize="12" FontWeight="SemiBold" />
-                    </Border>
-                    <Border Background="#161E29" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
-                        <TextBlock Text="{Binding UacPill}" Foreground="#E2E8F0" FontSize="12" />
-                    </Border>
-                    <Border Background="#161E29" BorderBrush="#10B981" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,8,8">
-                        <TextBlock Text="{Binding BackupPill}" Foreground="#6EE7B7" FontSize="12" />
-                    </Border>
-                </WrapPanel>
-
-                <!-- Minimalist Action Dock -->
-                <Border Background="#161E29" BorderBrush="#263244" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,0,0,16">
-                    <StackPanel>
-                        <WrapPanel Margin="0,0,0,12">
-                            <ui:Button x:Name="BtnAudit"
-                                       Content="Run Audit"
-                                       AutomationProperties.Name="Run Audit"
-                                       Command="{Binding RunAuditCommand}"
-                                       Appearance="Secondary"
-                                       MinWidth="110" MinHeight="44" Margin="0,0,10,8" TabIndex="1" />
-                            <ui:Button x:Name="BtnDryRun"
-                                       Content="Dry Run (Gaming)"
-                                       AutomationProperties.Name="Dry Run"
-                                       Command="{Binding RunDryRunCommand}"
-                                       CommandParameter="{x:Static core:PresetProfile.Gaming}"
-                                       Appearance="Secondary"
-                                       MinWidth="130" MinHeight="44" Margin="0,0,10,8" TabIndex="2" />
-                            <ui:Button x:Name="BtnDaily"
-                                       Content="Daily Profile"
-                                       AutomationProperties.Name="Daily Profile"
-                                       Command="{Binding ApplyDailyCommand}"
-                                       Appearance="Primary"
-                                       MinWidth="125" MinHeight="44" Margin="0,0,10,8" TabIndex="3" />
-                            <ui:Button x:Name="BtnGaming"
-                                       Content="Gaming Profile"
-                                       AutomationProperties.Name="Gaming Profile"
-                                       Command="{Binding ApplyGamingCommand}"
-                                       Appearance="Primary"
-                                       MinWidth="135" MinHeight="44" Margin="0,0,10,8" TabIndex="4" />
-                            <ui:Button x:Name="BtnResume"
-                                       Content="Resume"
-                                       AutomationProperties.Name="Resume"
-                                       Command="{Binding ResumeAppsCommand}"
-                                       Appearance="Secondary"
-                                       MinWidth="96" MinHeight="44" Margin="0,0,10,8" TabIndex="5" />
-                            <ui:Button x:Name="BtnRollback"
-                                       Content="Rollback"
-                                       AutomationProperties.Name="Rollback"
-                                       Command="{Binding RollbackCommand}"
-                                       Appearance="Danger"
-                                       MinWidth="105" MinHeight="44" Margin="0,0,10,8" TabIndex="6" />
-                        </WrapPanel>
-
-                        <WrapPanel VerticalAlignment="Center">
-                            <CheckBox x:Name="ChkMouseAccel"
-                                      Content="Disable Mouse Accel"
-                                      AutomationProperties.Name="Mouse Acceleration"
-                                      IsChecked="{Binding DisableMouseAccel}"
-                                      MinHeight="44" Margin="0,0,18,0" TabIndex="7" />
-                            <CheckBox x:Name="ChkNetLatency"
-                                      Content="Network Throttling Off"
-                                      AutomationProperties.Name="Network Latency"
-                                      IsChecked="{Binding OptimizeNetworkLatency}"
-                                      MinHeight="44" Margin="0,0,18,0" TabIndex="8" />
-                            <CheckBox x:Name="ChkCommsGuard"
-                                      Content="Include Comms in Guard"
-                                      AutomationProperties.Name="Comms Guard"
-                                      IsChecked="{Binding IncludeCommsInGuard}"
-                                      MinHeight="44" Margin="0,0,18,0" TabIndex="9" />
-                            <ComboBox x:Name="CmbHibernation"
-                                      AutomationProperties.Name="Hibernation Mode"
-                                      ItemsSource="{Binding HibernationOptions}"
-                                      SelectedItem="{Binding SelectedHibernation}"
-                                      MinWidth="140" MinHeight="44" TabIndex="10" />
-                        </WrapPanel>
-                    </StackPanel>
+            <!-- Top Status Pills -->
+            <WrapPanel Grid.Row="0" Margin="0,0,0,12">
+                <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="6" Padding="12,7" Margin="0,0,8,6">
+                    <TextBlock Text="{Binding HardwarePill}" Foreground="#F3F4F6" FontSize="12" />
                 </Border>
-
-                <!-- Live Status Banner -->
-                <Border Background="#111827" BorderBrush="#334155" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,16">
-                    <TextBlock x:Name="TxtStatus"
-                               Text="{Binding StatusMessage}"
-                               AutomationProperties.LiveSetting="Polite"
-                               Foreground="#F1F5F9"
-                               FontSize="13"
-                               TextWrapping="Wrap" />
+                <Border Background="#171A21" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="6" Padding="12,7" Margin="0,0,8,6">
+                    <TextBlock Text="{Binding PowerPill}" Foreground="#7DD3FC" FontSize="12" FontWeight="SemiBold" />
                 </Border>
+                <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="6" Padding="12,7" Margin="0,0,8,6">
+                    <TextBlock Text="{Binding UacPill}" Foreground="#F3F4F6" FontSize="12" />
+                </Border>
+                <Border Background="#171A21" BorderBrush="#10B981" BorderThickness="1" CornerRadius="6" Padding="12,7" Margin="0,0,8,6">
+                    <TextBlock Text="{Binding BackupPill}" Foreground="#6EE7B7" FontSize="12" />
+                </Border>
+            </WrapPanel>
 
-                <!-- Diff & Startup Grid -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="16" />
-                        <ColumnDefinition Width="2*" />
-                    </Grid.ColumnDefinitions>
+            <!-- 5-View Minimalist Left-Rail Navigation -->
+            <TabControl Grid.Row="1"
+                        TabStripPlacement="Left"
+                        Background="#0F1115"
+                        BorderThickness="0"
+                        ItemContainerStyle="{StaticResource NavTabItemStyle}">
 
-                    <Border Grid.Column="0" Background="#161E29" BorderBrush="#263244" BorderThickness="1" CornerRadius="10" Padding="14">
+                <!-- 1. OVERVIEW -->
+                <TabItem Header="Overview &amp; Health">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14,0,0,0">
                         <StackPanel>
-                            <TextBlock x:Name="LblDiffHeader" Text="Configuration Diff (Before / After)" FontSize="15" FontWeight="SemiBold" Foreground="#F8FAFC" Margin="0,0,0,10" />
-                            <DataGrid x:Name="DiffDataGrid"
-                                      AutomationProperties.Name="Configuration Diff"
-                                      AutomationProperties.LabeledBy="{Binding ElementName=LblDiffHeader}"
-                                      ItemsSource="{Binding DiffRows}"
-                                      AutoGenerateColumns="False"
-                                      IsReadOnly="True"
-                                      Height="280"
-                                      KeyboardNavigation.TabNavigation="Once"
-                                      TabIndex="11">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Setting" Binding="{Binding Item}" Width="2*" />
-                                    <DataGridTextColumn Header="Before" Binding="{Binding Before}" Width="*" />
-                                    <DataGridTextColumn Header="After" Binding="{Binding After}" Width="*" />
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Grid.Column="2" Background="#161E29" BorderBrush="#263244" BorderThickness="1" CornerRadius="10" Padding="14">
-                        <StackPanel>
-                            <TextBlock x:Name="LblStartupHeader" Text="Startup Programs" FontSize="15" FontWeight="SemiBold" Foreground="#F8FAFC" Margin="0,0,0,10" />
-                            <ListView x:Name="StartupListView"
-                                      AutomationProperties.Name="Startup Programs"
-                                      AutomationProperties.LabeledBy="{Binding ElementName=LblStartupHeader}"
-                                      ItemsSource="{Binding StartupEntries}"
-                                      Height="280"
-                                      KeyboardNavigation.TabNavigation="Once"
-                                      TabIndex="12">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Margin="0,4">
-                                            <TextBlock Text="{Binding Name}" Foreground="#F8FAFC" FontWeight="SemiBold" />
-                                            <TextBlock Text="{Binding Category}" Foreground="#94A3B8" FontSize="11" />
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="18" Margin="0,0,0,14">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="#0F1115" BorderBrush="#38BDF8" BorderThickness="2" CornerRadius="12" Width="110" Height="88" Margin="0,0,18,0">
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding OverallHealthScore}" FontSize="28" FontWeight="Bold" Foreground="#38BDF8" HorizontalAlignment="Center" />
+                                            <TextBlock Text="HEALTH / 100" FontSize="10" Foreground="#9CA3AF" HorizontalAlignment="Center" />
                                         </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Complete Technical Revision" FontSize="18" FontWeight="SemiBold" Foreground="#F3F4F6" />
+                                        <TextBlock Text="Scans Drivers, Battery Wear, RAM Topology, CPU/DPC &amp; SSD SMART without Administrator rights." Foreground="#9CA3AF" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                    <WrapPanel Grid.Column="2" VerticalAlignment="Center">
+                                        <ui:Button x:Name="BtnFullRevision" Content="Run Full Revision" Command="{Binding RunFullRevisionCommand}" Appearance="Primary" MinHeight="44" Margin="0,0,8,6" />
+                                        <ui:Button x:Name="BtnSaveBaseline" Content="Save Before" Command="{Binding SaveBaselineCheckpointCommand}" Appearance="Secondary" MinHeight="44" Margin="0,0,0,6" />
+                                    </WrapPanel>
+                                </Grid>
+                            </Border>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
-                    <ui:Button x:Name="BtnExportReport"
-                               Content="Export HTML / MD Report"
-                               AutomationProperties.Name="Export Report"
-                               Command="{Binding ExportReportCommand}"
-                               Appearance="Secondary"
-                               MinWidth="180" MinHeight="44" TabIndex="13" />
-                </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
+                            <UniformGrid Columns="5" Margin="0,0,0,14">
+                                <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,8,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Drivers" Foreground="#9CA3AF" FontSize="11" />
+                                        <TextBlock Text="{Binding DriverScore}" Foreground="#F3F4F6" FontSize="20" FontWeight="Bold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,8,0">
+                                    <StackPanel>
+                                        <TextBlock Text="CPU / DPC" Foreground="#9CA3AF" FontSize="11" />
+                                        <TextBlock Text="{Binding CpuScore}" Foreground="#F3F4F6" FontSize="20" FontWeight="Bold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,8,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Memory" Foreground="#9CA3AF" FontSize="11" />
+                                        <TextBlock Text="{Binding MemoryScore}" Foreground="#F3F4F6" FontSize="20" FontWeight="Bold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,8,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Storage" Foreground="#9CA3AF" FontSize="11" />
+                                        <TextBlock Text="{Binding StorageScore}" Foreground="#F3F4F6" FontSize="20" FontWeight="Bold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="8" Padding="12">
+                                    <StackPanel>
+                                        <TextBlock Text="Battery" Foreground="#9CA3AF" FontSize="11" />
+                                        <TextBlock Text="{Binding BatteryScore}" Foreground="#F3F4F6" FontSize="20" FontWeight="Bold" />
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="Actionable Findings &amp; Recommendations" FontSize="14" FontWeight="SemiBold" Foreground="#F3F4F6" Margin="0,0,0,10" />
+                                    <DataGrid ItemsSource="{Binding Recommendations}" Style="{StaticResource DarkDataGridStyle}" Height="280">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" Width="90" />
+                                            <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="90" />
+                                            <DataGridTextColumn Header="Finding" Binding="{Binding Title}" Width="2*" />
+                                            <DataGridTextColumn Header="Evidence" Binding="{Binding Evidence}" Width="2*" />
+                                            <DataGridTextColumn Header="Expected Impact" Binding="{Binding ExpectedImpact}" Width="2*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- 2. DRIVERS -->
+                <TabItem Header="Drivers Audit">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14,0,0,0">
+                        <StackPanel>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,14">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding DriversSummary}" Foreground="#F3F4F6" FontSize="14" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding OemAdvisorHint}" Foreground="#7DD3FC" FontSize="12" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                    <ui:Button Grid.Column="1" Content="Install Safe Drivers (WUA / winget)" Command="{Binding InstallSafeDriversCommand}" Appearance="Primary" MinHeight="44" />
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Flagged PnP Devices (Errors / Missing / Unsigned)" FontSize="14" FontWeight="SemiBold" Foreground="#F3F4F6" Margin="0,0,0,8" />
+                                    <DataGrid ItemsSource="{Binding FlaggedDrivers}" Style="{StaticResource DarkDataGridStyle}" Height="200">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Device" Binding="{Binding FriendlyName}" Width="2*" />
+                                            <DataGridTextColumn Header="Class" Binding="{Binding DeviceClass}" Width="*" />
+                                            <DataGridTextColumn Header="PnP Code" Binding="{Binding ConfigManagerErrorCode}" Width="80" />
+                                            <DataGridTextColumn Header="Trust" Binding="{Binding Trust}" Width="*" />
+                                            <DataGridTextColumn Header="Version" Binding="{Binding DriverVersion}" Width="*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="Available WHQL / Allowlisted Updates" FontSize="14" FontWeight="SemiBold" Foreground="#F3F4F6" Margin="0,0,0,8" />
+                                    <DataGrid ItemsSource="{Binding DriverUpdates}" Style="{StaticResource DarkDataGridStyle}" Height="180">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="2*" />
+                                            <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="*" />
+                                            <DataGridTextColumn Header="Risk Tier" Binding="{Binding RiskTier}" Width="*" />
+                                            <DataGridTextColumn Header="Auto" Binding="{Binding IsAutoApplyAllowed}" Width="70" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- 3. HARDWARE DIAGNOSTICS -->
+                <TabItem Header="Hardware Diagnostics">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14,0,0,0">
+                        <StackPanel>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="CPU &amp; DPC Latency" Foreground="#38BDF8" FontWeight="SemiBold" FontSize="13" />
+                                    <TextBlock Text="{Binding CpuSummary}" Foreground="#F3F4F6" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="Battery Health" Foreground="#38BDF8" FontWeight="SemiBold" FontSize="13" />
+                                    <TextBlock Text="{Binding BatterySummary}" Foreground="#F3F4F6" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="GPU &amp; HAGS" Foreground="#38BDF8" FontWeight="SemiBold" FontSize="13" />
+                                    <TextBlock Text="{Binding GpuSummary}" Foreground="#F3F4F6" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="Memory &amp; DIMM Slots" Foreground="#38BDF8" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,4" />
+                                    <TextBlock Text="{Binding MemorySummary}" Foreground="#F3F4F6" TextWrapping="Wrap" Margin="0,0,0,8" />
+                                    <DataGrid ItemsSource="{Binding MemoryDimms}" Style="{StaticResource DarkDataGridStyle}" Height="120">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Slot" Binding="{Binding DeviceLocator}" Width="*" />
+                                            <DataGridTextColumn Header="Size (GB)" Binding="{Binding CapacityGb}" Width="80" />
+                                            <DataGridTextColumn Header="Type" Binding="{Binding MemoryType}" Width="80" />
+                                            <DataGridTextColumn Header="Configured MT/s" Binding="{Binding ConfiguredClockMt}" Width="120" />
+                                            <DataGridTextColumn Header="Part Number" Binding="{Binding PartNumber}" Width="2*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="Storage &amp; SMART" Foreground="#38BDF8" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,4" />
+                                    <TextBlock Text="{Binding StorageSummary}" Foreground="#F3F4F6" TextWrapping="Wrap" Margin="0,0,0,8" />
+                                    <DataGrid ItemsSource="{Binding StorageDisks}" Style="{StaticResource DarkDataGridStyle}" Height="120">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Disk" Binding="{Binding FriendlyName}" Width="2*" />
+                                            <DataGridTextColumn Header="Media" Binding="{Binding MediaType}" Width="*" />
+                                            <DataGridTextColumn Header="Size (GB)" Binding="{Binding SizeGb}" Width="90" />
+                                            <DataGridTextColumn Header="Wear %" Binding="{Binding WearPercentUsed}" Width="80" />
+                                            <DataGridTextColumn Header="Temp °C" Binding="{Binding TemperatureCelsius}" Width="80" />
+                                            <DataGridTextColumn Header="Health" Binding="{Binding HealthStatus}" Width="*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- 4. OPTIMIZER & DIFF -->
+                <TabItem Header="Optimizer &amp; Diff">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14,0,0,0">
+                        <StackPanel>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <WrapPanel Margin="0,0,0,10">
+                                        <ui:Button x:Name="BtnAudit" Content="Run Audit" Command="{Binding RunAuditCommand}" Appearance="Secondary" MinHeight="44" Margin="0,0,8,6" TabIndex="1" />
+                                        <ui:Button x:Name="BtnDryRun" Content="Dry Run (Gaming)" Command="{Binding RunDryRunCommand}" CommandParameter="{x:Static core:PresetProfile.Gaming}" Appearance="Secondary" MinHeight="44" Margin="0,0,8,6" TabIndex="2" />
+                                        <ui:Button x:Name="BtnDaily" Content="Daily Profile" Command="{Binding ApplyDailyCommand}" Appearance="Primary" MinHeight="44" Margin="0,0,8,6" TabIndex="3" />
+                                        <ui:Button x:Name="BtnGaming" Content="Gaming Profile" Command="{Binding ApplyGamingCommand}" Appearance="Primary" MinHeight="44" Margin="0,0,8,6" TabIndex="4" />
+                                        <ui:Button x:Name="BtnResume" Content="Resume" Command="{Binding ResumeAppsCommand}" Appearance="Secondary" MinHeight="44" Margin="0,0,8,6" TabIndex="5" />
+                                        <ui:Button x:Name="BtnRollback" Content="Rollback" Command="{Binding RollbackCommand}" Appearance="Danger" MinHeight="44" Margin="0,0,8,6" TabIndex="6" />
+                                    </WrapPanel>
+                                    <WrapPanel VerticalAlignment="Center">
+                                        <CheckBox x:Name="ChkMouseAccel" Content="Disable Mouse Accel" IsChecked="{Binding DisableMouseAccel}" Foreground="#F3F4F6" MinHeight="38" Margin="0,0,16,0" />
+                                        <CheckBox x:Name="ChkNetLatency" Content="Network Throttling Off" IsChecked="{Binding OptimizeNetworkLatency}" Foreground="#F3F4F6" MinHeight="38" Margin="0,0,16,0" />
+                                        <CheckBox x:Name="ChkCommsGuard" Content="Include Comms in Guard" IsChecked="{Binding IncludeCommsInGuard}" Foreground="#F3F4F6" MinHeight="38" Margin="0,0,16,0" />
+                                        <ComboBox x:Name="CmbHibernation" ItemsSource="{Binding HibernationOptions}" SelectedItem="{Binding SelectedHibernation}" MinWidth="130" MinHeight="38" />
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="14" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14">
+                                    <StackPanel>
+                                        <TextBlock Text="Configuration Diff (Before / After)" FontSize="14" FontWeight="SemiBold" Foreground="#F3F4F6" Margin="0,0,0,8" />
+                                        <DataGrid x:Name="DiffDataGrid" ItemsSource="{Binding DiffRows}" Style="{StaticResource DarkDataGridStyle}" Height="300">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Setting" Binding="{Binding Item}" Width="2*" />
+                                                <DataGridTextColumn Header="Before" Binding="{Binding Before}" Width="*" />
+                                                <DataGridTextColumn Header="After" Binding="{Binding After}" Width="*" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14">
+                                    <StackPanel>
+                                        <TextBlock Text="Startup Programs" FontSize="14" FontWeight="SemiBold" Foreground="#F3F4F6" Margin="0,0,0,8" />
+                                        <ListView x:Name="StartupListView" ItemsSource="{Binding StartupEntries}" Height="300" Background="#0F1115" Foreground="#F3F4F6" BorderBrush="#2A303C" BorderThickness="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                                    <Setter Property="BorderBrush" Value="#222834" />
+                                                    <Setter Property="Padding" Value="10,6" />
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ListViewItem">
+                                                                <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                                    <ContentPresenter />
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#1E2430" />
+                                                                    </Trigger>
+                                                                    <Trigger Property="IsSelected" Value="True">
+                                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#1E3A5F" />
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="0,2">
+                                                        <TextBlock Text="{Binding Name}" Foreground="#F3F4F6" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding Category}" Foreground="#9CA3AF" FontSize="11" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- 5. REVISIONS & REPORTS -->
+                <TabItem Header="Before / After Reports">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14,0,0,0">
+                        <StackPanel>
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,14">
+                                <WrapPanel>
+                                    <ui:Button x:Name="BtnExportRevision" Content="Export Unified Before/After (HTML / MD / JSON)" Command="{Binding ExportRevisionReportCommand}" Appearance="Primary" MinHeight="44" Margin="0,0,10,6" />
+                                    <ui:Button x:Name="BtnExportReport" Content="Export Dry-Run Diff (HTML / MD)" Command="{Binding ExportReportCommand}" Appearance="Secondary" MinHeight="44" Margin="0,0,0,6" />
+                                </WrapPanel>
+                            </Border>
+
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Before vs After Metric Deltas" FontSize="14" FontWeight="SemiBold" Foreground="#F3F4F6" Margin="0,0,0,8" />
+                                    <DataGrid ItemsSource="{Binding RevisionDeltas}" Style="{StaticResource DarkDataGridStyle}" Height="200">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="90" />
+                                            <DataGridTextColumn Header="Metric" Binding="{Binding Metric}" Width="*" />
+                                            <DataGridTextColumn Header="Before" Binding="{Binding Before}" Width="*" />
+                                            <DataGridTextColumn Header="After" Binding="{Binding After}" Width="*" />
+                                            <DataGridTextColumn Header="Delta" Binding="{Binding DeltaAssessment}" Width="*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#171A21" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="10" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="Saved Revision Checkpoints" FontSize="14" FontWeight="SemiBold" Foreground="#F3F4F6" Margin="0,0,0,8" />
+                                    <DataGrid ItemsSource="{Binding SavedRevisions}" Style="{StaticResource DarkDataGridStyle}" Height="160">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Label" Binding="{Binding Label}" Width="2*" />
+                                            <DataGridTextColumn Header="Kind" Binding="{Binding Kind}" Width="*" />
+                                            <DataGridTextColumn Header="Score" Binding="{Binding Scores.OverallScore}" Width="70" />
+                                            <DataGridTextColumn Header="Captured (UTC)" Binding="{Binding CapturedAtUtc}" Width="*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+
+            <!-- Live Status Banner -->
+            <Border Grid.Row="2" Background="#111827" BorderBrush="#2A303C" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,10,0,0">
+                <TextBlock x:Name="TxtStatus" Text="{Binding StatusMessage}" AutomationProperties.LiveSetting="Polite" Foreground="#F3F4F6" FontSize="13" TextWrapping="Wrap" />
+            </Border>
+        </Grid>
     </Grid>
 </ui:FluentWindow>
